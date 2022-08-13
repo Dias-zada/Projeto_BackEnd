@@ -34,7 +34,7 @@ $fornecedor="";
 
 //Laço de repetição para pegar o dados presentes no $res e inserir numa variavel para uso
 while($rows = mysqli_fetch_assoc($res)){
-    $fornecedor .= $rows['nome_Fornecedor'].",";
+    $fornecedor .= $rows['nome_Fornecedor'].", ";
 }
 $fornecedor = rtrim($fornecedor, ", ");
 
