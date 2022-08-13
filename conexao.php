@@ -1,6 +1,7 @@
 <?php
 
 class Conexao{
+    //Setando parametros para o acesso ao banco de dados 
     private $host = "localhost";
     private $user = "root";
     private $pass = "";
@@ -13,10 +14,12 @@ class Conexao{
         ($this->con->error."\nSem conexão com o servidor, Host=".$this->host." User=".$this->user." Pass=".$this->pass." Db=".$this->db);
     }
 
+    //Pegar o valor da conexão;
     function getConexao(){
         return $this->con;
     }
 
+    //Fechar a conexão do mysql quando chamado
     function FecharConexao(){
         mysqli_close($this->con);
     }

@@ -1,14 +1,30 @@
+//Criando uma função assincrona para listar todos os produtos e apresenta em uma tabela
+const listarProdutos = async () =>{
+    const tbody = document.querySelector("#tabela");
+    const dados = await fetch("./tabela.php");
+    const reposta = await dados.text();
+    tbody.innerHTML = reposta;
+}
 
+//Chamando listarProdutos
+listarProdutos();
+
+//Comando inicia junto do site
 $(document).ready(function(){
+
+    //Caso alguma tecla for digitada dentro do input com id serach 
     $("#search").keyup(function(){
         var input = $(this).val();
+        //Verifica se o input está vazio ou não, caso não ele envia um requisão ajax para o 
+        //produto.php 
         if(input != ""){
             $.ajax({
 
                 url:"produtos.php",
                 method:"POST",
                 data:{input:input},
-
+                
+                //Se ocorrer tudo certo, será apresenta as informações do produto pesquisado
                 success:function(data){
                     $("#teste").css("display", "block");
                     $("#teste").html(data);
@@ -26,6 +42,8 @@ function clickarBotao(){
     const popup = document.querySelector('.popup-wrapper');
     //const closeButton = document.querySelector('.popup-close');
 
+    //Evento que verifica se foi clicado em algum componente com a classe igual a 'popup-close' ou 'popup-wrapper'
+    //se algum componente for clickado, será alterado o display do popup tornando-o none e ficando "invisivel"
     popup.addEventListener('click', ()=>{
         const classNameOfClickedElement = event.target.classList[0];
         const className = ['popup-close', 'popup-wrapper'];
@@ -36,16 +54,22 @@ function clickarBotao(){
         }
     })
 
+    //Se o esc for clickado ele fecha o popup tbm
     document.onkeyup = function(e){
         if (e.keyCode == 27) {
             popup.style.display = 'none'
           }
     }
 
+
+    //Pega o texto de algum componente de tenha id test.
+    //O texto dessa div vem do produtos.php, para ter o coontrole do numero de resposta que veio do pesquisador
     var div = parseInt($(".test").text());
     for(var x = 0; x<=div; x++){
         const numero = "btnVenda"+x;
         const button = document.getElementById(numero);
+        
+        //Pega valor de cada btnVenda e inseri em uma div com id txtId
         if(button){
             button.addEventListener('click',()=>{
                 popup.style.display = 'block';
@@ -57,12 +81,19 @@ function clickarBotao(){
     }
 }
 
+//Função para para preencher os campos relacionados ao cpf 
 function cep(){
+
+    //Evento que ocorre quando o input do CEP é deselecionado, ativo o focusout
     document.getElementById('txtCEP')
     .addEventListener('focusout',async()=>{
+        //Pega o valor que esta dentro do input do CEP
         const cep = document.getElementById('txtCEP').value;
+        //Pega o json dos dados de endereço vindo da WebApi viacep
         const url = `https://viacep.com.br/ws/${cep}/json/`;
-        //fetch(url).then(responde => responde.json()).then(console.log);
+        //Manda para uma função que verifica se não tem letra no cep, caso for True um fetch com a url
+        //para a WebApi, se o cep que foi junto com a url estiver errado entra no if e mostrara que não encotro o cep
+        //caso o cep estaja certo ele chama a função preencherFormulario
         if(cepValido(cep)){
             const dados = await fetch(url);
             const endereco = await dados.json();
@@ -84,6 +115,7 @@ function cep(){
 
 const cepValido = (cep) =>  /^[0-9]+$/.test(cep);
 
+//Preenche os input com dados do endereço do CEP
 const preencherFormulario= (endereco) =>{
     document.getElementById('txtRua').value = endereco.logradouro;
     document.getElementById('txtBairro').value = endereco.bairro;
@@ -92,6 +124,7 @@ const preencherFormulario= (endereco) =>{
 
 }
 
+//Limpa os dados que estão no input
 const limparFormulario= () =>{
     document.getElementById('txtDataVenda').value = '';
     document.getElementById('txtCEP').value = '';
@@ -102,25 +135,68 @@ const limparFormulario= () =>{
 
 }
 
+//Função que é usada para criar a tabela das vendas, recebe um json com as informações de cada venda
+function criarTabela(json){
+    //Nessa function é usado o createElement para criar o local na table onde os dados vindo do json serão posto
+    const corpoTabela = document.getElementById("corpoTabela");
+    const linhaTabela = document.createElement("tr");
 
+    const elemento1Tabela = document.createElement("td");
+    const elemento2Tabela = document.createElement("td");
+    const elemento3Tabela = document.createElement("td");
+
+    //Adiciona os dados da Venda
+    elemento1Tabela.appendChild(document.createTextNode(json['nome']));
+    elemento2Tabela.appendChild(document.createTextNode(json['preco']));
+    elemento3Tabela.appendChild(document.createTextNode(json['fornecedores']));
+
+    linhaTabela.appendChild(elemento1Tabela);
+    linhaTabela.appendChild(elemento2Tabela);
+    linhaTabela.appendChild(elemento3Tabela);
+
+    corpoTabela.appendChild(linhaTabela);
+    //No json vem o dado que informa o preço final das vendas, que é passado como parametro para o contarPreco
+    const numeroTeste = json['precoFinal'];
+    contarPreco(numeroTeste);
+}
+
+//Função que recebe o preço final das vendas e insere numa div
+function contarPreco(numeroTeste){
+    document.getElementById('precoTabela').innerHTML = numeroTeste;
+    console.log(numeroTeste);
+}
+
+//pega o form inteiro que sera lido pelo FormData
 const form = document.getElementById("form");
 
-//Colocando um listener para alterar o comportamento do Form
+//Colocando um listener que é ativado quando o botão para cadastrar a venda presnete no 
+//Formulario da Venda é apertado
 form.addEventListener("submit", function(event){
     event.preventDefault();
 
+    //FormData é um metodo que ja consegue trabalhar com os dados vindo de um form, sem ter que escrever dado por dado que será enviado
     let data = new FormData(form);
+
+    //Objeto Xml para realizar a requisão com o vendas.php
     let httpRequest = new XMLHttpRequest();
 
+    //Logistica para realizar a requisição, realizando a requisição com vendas.php e setando o metodo POST 
     httpRequest.open("POST", "vendas.php");
     httpRequest.setRequestHeader("X-Content-Type-Options", "multipart/form-data");
+    //Envia os dados
     httpRequest.send(data);
     httpRequest.onreadystatechange = function(){
+        //Estrutura condicionais para verificar a requisição foi feita e não ocorreu nenhum erro
         if(this.readyState == 4){
             if(this.status == 200){
+                //Trata o json que é enviado do vendas.php
+                const json = JSON.parse(this.response);
+                //Fecha o popup
+                const popup = document.querySelector('.popup-wrapper');
+                //Envia json como paramentro para criar tabela de vendas
+                criarTabela(json);
+                popup.style.display = 'none'
                 limparFormulario();
-                alert("Venda Registrada");
-            }else{
             }
         }
     }

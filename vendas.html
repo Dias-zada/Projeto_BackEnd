@@ -15,14 +15,32 @@
                     <div class="modal-header p-5 pb-4 border-bottom-0 cor-bloco">
                         <h2 class="fw-bold mb-0">Cadastro de Vendas</h2>
                     </div>
-
                     <div class="modal-body p-5 pt-0 cor-bloco">
+                    <!-- Input para pesquisar o produto-->
                     <input type = "text" class="form-control" id="search" autocomplete="off" placeholder="Buscar Produto">
                     <br></br>
+                        <!--Div onde aparece os dados do produto pesquisa no input acima-->
                         <div class = "cor-bloco">
                             <div id="teste"></div>
                         </div> 
-                    
+
+                        <!--Outra tabela onde mostra todos os produtos cadastrados no banco de dados-->
+                        <div>
+                            <table class="table table-striped table-light">
+                                <thead class="cor-table">
+                                    <tr>
+                                        <th >Nome</th>
+                                        <th >Referencia</th>
+                                        <th >Preço</th>
+                                    </tr>            
+                                </thead>
+                                <tbody id="tabela">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!--Cria um pop up para que o usuario posso registrar a venda do produto escolhido-->
                         <div class="popup-wrapper">
                             <div class="popup">
                                 <div class="popup-close">X</div>
@@ -36,9 +54,9 @@
                                             <div class="modal-body p-5 pt-0 cor-bloco">
                                                 <form id="form">
                                                     <div class="row">
-                                                        <div class="col-5">
+                                                        <div class="col-6">
                                                             <div class="form-floating mb-3">
-                                                                <input type="date" required class="form-control rounded-4" id="txtDataVenda" name="DataVenda" placeholder="Data Venda" max="2022-01-01" min="1900-01-01">
+                                                                <input type="date" required class="form-control rounded-4" id="txtDataVenda" name="DataVenda" placeholder="Data Venda" max="2022-12-31" min="1900-01-01">
                                                                 <label id="labelDataVenda" for="txtDataVenda">Data Venda</label>
                                                             </div>
                                                         </div>
@@ -126,53 +144,30 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="container margin-meio historico cor-bloco">
-                            <h1>Histórico</h1>
+                        <div class="container margin-meio cor-bloco shadow">
+                            <div class="modal-header p-5 pb-4 border-bottom-0 cor-bloco">
+                                <h2 class="fw-bold mb-0">Cadastro de Vendas</h2>
+                            </div>
+                            <!--Tabela final que apresenta as vendas-->
                             <table class="table table-striped table-dark">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Valor</th>
-                                        <th scope="col">Data da Movimentação</th>
-                                        <th scope="col">Tipo da Movimentação</th>
-                                        <th scope="col">Número de Série do Cartão</th>
-                                        <th scope="col">Id Percurso</th>
+                                        <th scope="col">Nome Produto</th>
+                                        <th scope="col">Preco</th>
+                                        <th scope="col">Fornecedores</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>5,05</td>
-                                        <td>05/01/2022</td>
-                                        <td>Efetiva</td>
-                                        <td>123456778</td>
-                                        <td>5114</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>5,05</td>
-                                        <td>05/01/2022</td>
-                                        <td>Efetiva</td>
-                                        <td>123456778</td>
-                                        <td>5114</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>5,05</td>
-                                        <td>05/01/2022</td>
-                                        <td>Efetiva</td>
-                                        <td>123456778</td>
-                                        <td>5114</td>
-                                    </tr>
+                                <tbody id = "corpoTabela">     
                                 </tbody>
                             </table>
-                            <br><br><br>
+                            <!--Divs para mostra o preço final-->
+                            <div>Preço Total:</div>
+                            <div id="precoTabela">0</div>
                         </div>
                     </div>
                 </div>
-                </div>
             </div>
+        </div>
     </body>
     <script type="module" src="venda.js"></script>
     
