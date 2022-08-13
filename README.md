@@ -1,6 +1,8 @@
 #Projeto_BackEnd
 Projeto desenvolvido por João Vitor Dias, focado em BackEnd para Cadastro de Venda
 
+Para criar o banco de dado pasta copiar o codigo abaixo, nele tambem já estão incluidos insert dos produtos e fornecedores
+
 COMANDO MYSQL PARA CRIAR BANCO:
 ----------------------------------------------------------------------------
 create database projeto_backend;
