@@ -32,7 +32,7 @@ id_Fornecedor int primary key auto_increment not null,
 nome_Fornecedor varchar(50) not null,
 referencia_Produto int not null,
 FOREIGN KEY (referencia_Produto) REFERENCES Produtos (referencia_Produto)
-)
+);
 
 #A partir daqui serão adicionados os insert para produtos e para fornecedores
 
