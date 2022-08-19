@@ -162,7 +162,6 @@ function criarTabela(contFinal,cont){
     }else if(sinal==0){
         cont2 = cont;
     }
-    console.log(sqlTotal);
     for(var x = cont2; x<=contFinal;x++){
         //Nessa function é usado o createElement para criar o local na table onde os dados vindo do json serão posto
         const corpoTabela = document.getElementById("corpoTabela");
@@ -184,6 +183,7 @@ function criarTabela(contFinal,cont){
         corpoTabela.appendChild(linhaTabela);
         //No json vem o dado que informa o preço final das vendas, que é passado como parametro para o contarPreco
     }
+    console.log(localStorage.getItem("sql"));
 }
 
 if(localStorage.cont){
@@ -191,9 +191,13 @@ if(localStorage.cont){
     cont = contFinal2
     localStorage.setItem("sinal", 1);
     criarTabela(contFinal2,cont);
+    document.getElementById('precoTabela').innerHTML = "Preço Total: "+ localStorage.getItem("preco");
 }else{
     cont = 0;
+    localStorage.setItem("preco", 0);
     localStorage.setItem("sinal", 0);
+    localStorage.setItem("sql", "");
+    document.getElementById('precoTabela').innerHTML = "Preço Total: "+ localStorage.getItem("preco");
 }
 
 function salvarDados(json){
@@ -203,16 +207,22 @@ function salvarDados(json){
     localStorage.setItem("preco"+cont, json['preco']);
     localStorage.setItem("fornecedores"+cont, json['fornecedores']);
     sqlTotal = sqlTotal+"/"+(json['sql']);
-    localStorage.setItem("sql", sqlTotal);
-    const numeroTeste = json['precoFinal'];
+    var sqlTotal2 = localStorage.getItem("sql");
+    localStorage.setItem("sql", sqlTotal2+sqlTotal);
+    const preco = json['preco'];
     var contFinal = localStorage.getItem("cont", cont)
     criarTabela(contFinal,cont);
-    contarPreco(numeroTeste);
+    contarPreco(preco);
 }
 
 //Função que recebe o preço final das vendas e insere numa div
-function contarPreco(numeroTeste){
-    document.getElementById('precoTabela').innerHTML = "Preço Total: "+numeroTeste; 
+function contarPreco(preco){
+    var precoFinal = localStorage.getItem("preco");
+    var intTeste1 = parseInt(precoFinal)
+    var intTeste2 = parseInt(preco)
+    precoFinal = intTeste1 + intTeste2;
+    localStorage.setItem("preco", precoFinal);
+    document.getElementById('precoTabela').innerHTML = "Preço Total: "+ precoFinal; 
 }
 
 //pega o form inteiro que sera lido pelo FormData
