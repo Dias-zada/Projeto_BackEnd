@@ -1,10 +1,7 @@
 var sqlTotal = "";
 var cont = 0;
 
-if(localStorage.cont){
-    criarTabela(contFinal2,cont);
-    var contFinal2 = localStorage.getItem("cont", cont);
-}
+
 
 //Criando uma função assincrona para listar todos os produtos e apresenta em uma tabela
 const listarProdutos = async () =>{
@@ -153,11 +150,19 @@ const limparFormulario= () =>{
 
 //Função que é usada para criar a tabela das vendas, recebe um json com as informações de cada venda
 function criarTabela(contFinal,cont){
-    if(cont == 0){
-        var cont2 = 1;
-    }else{
-        var cont2 = cont;
+    var sinal = localStorage.getItem("sinal");
+    var cont2;
+    if(sinal == 1){
+        if(cont == 0){
+            cont2 = 1;
+        }else{
+            cont2 = 1;
+            localStorage.setItem("sinal", 0);
+        } 
+    }else if(sinal==0){
+        cont2 = cont;
     }
+    console.log(sqlTotal);
     for(var x = cont2; x<=contFinal;x++){
         //Nessa function é usado o createElement para criar o local na table onde os dados vindo do json serão posto
         const corpoTabela = document.getElementById("corpoTabela");
@@ -181,6 +186,16 @@ function criarTabela(contFinal,cont){
     }
 }
 
+if(localStorage.cont){
+    var contFinal2 = localStorage.getItem("cont", cont);
+    cont = contFinal2
+    localStorage.setItem("sinal", 1);
+    criarTabela(contFinal2,cont);
+}else{
+    cont = 0;
+    localStorage.setItem("sinal", 0);
+}
+
 function salvarDados(json){
     cont++;
     localStorage.setItem("cont", cont);
@@ -188,6 +203,7 @@ function salvarDados(json){
     localStorage.setItem("preco"+cont, json['preco']);
     localStorage.setItem("fornecedores"+cont, json['fornecedores']);
     sqlTotal = sqlTotal+"/"+(json['sql']);
+    localStorage.setItem("sql", sqlTotal);
     const numeroTeste = json['precoFinal'];
     var contFinal = localStorage.getItem("cont", cont)
     criarTabela(contFinal,cont);
@@ -243,10 +259,10 @@ botaoVenda.addEventListener("click", function(event){
 
         url:"vendaFinal.php",
         method:"POST",
-        data:{input:sqlTotal},
+        data:{input:localStorage.getItem("sql")},
         
         //Se ocorrer tudo certo, será apresenta as informações do produto pesquisado
-        success:function(data){
+        success:function(){
             alert("Vendas realizadas com sucesso");
             tabelaPreco();
         }
