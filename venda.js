@@ -1,3 +1,11 @@
+var sqlTotal = "";
+var cont = 0;
+
+if(localStorage.cont){
+    criarTabela(contFinal2,cont);
+    var contFinal2 = localStorage.getItem("cont", cont);
+}
+
 //Criando uma função assincrona para listar todos os produtos e apresenta em uma tabela
 const listarProdutos = async () =>{
     const tbody = document.querySelector("#tabela");
@@ -75,6 +83,14 @@ function clickarBotao(){
                 popup.style.display = 'block';
                 const btn = document.getElementById(numero).value;
                 document.getElementById('txtId').value = btn;
+                const date = new Date();
+                const dia = date.getDate();
+                var mes = date.getMonth() + 1;
+                if(mes<10){
+                    mes = "0"+mes;
+                }
+                const ano = date.getFullYear()
+                document.getElementById('txtDataVenda').value = dia+"-"+mes+"-"+ano;
                 cep();
             });
         }
@@ -136,34 +152,51 @@ const limparFormulario= () =>{
 }
 
 //Função que é usada para criar a tabela das vendas, recebe um json com as informações de cada venda
-function criarTabela(json){
-    //Nessa function é usado o createElement para criar o local na table onde os dados vindo do json serão posto
-    const corpoTabela = document.getElementById("corpoTabela");
-    const linhaTabela = document.createElement("tr");
+function criarTabela(contFinal,cont){
+    if(cont == 0){
+        var cont2 = 1;
+    }else{
+        var cont2 = cont;
+    }
+    for(var x = cont2; x<=contFinal;x++){
+        //Nessa function é usado o createElement para criar o local na table onde os dados vindo do json serão posto
+        const corpoTabela = document.getElementById("corpoTabela");
+        const linhaTabela = document.createElement("tr");
 
-    const elemento1Tabela = document.createElement("td");
-    const elemento2Tabela = document.createElement("td");
-    const elemento3Tabela = document.createElement("td");
+        const elemento1Tabela = document.createElement("td");
+        const elemento2Tabela = document.createElement("td");
+        const elemento3Tabela = document.createElement("td");
 
-    //Adiciona os dados da Venda
-    elemento1Tabela.appendChild(document.createTextNode(json['nome']));
-    elemento2Tabela.appendChild(document.createTextNode(json['preco']));
-    elemento3Tabela.appendChild(document.createTextNode(json['fornecedores']));
+        //Adiciona os dados da Venda
+        elemento1Tabela.appendChild(document.createTextNode(localStorage.getItem('nome'+x)));
+        elemento2Tabela.appendChild(document.createTextNode(localStorage.getItem('preco'+x)));
+        elemento3Tabela.appendChild(document.createTextNode(localStorage.getItem('fornecedores'+x)));
 
-    linhaTabela.appendChild(elemento1Tabela);
-    linhaTabela.appendChild(elemento2Tabela);
-    linhaTabela.appendChild(elemento3Tabela);
+        linhaTabela.appendChild(elemento1Tabela);
+        linhaTabela.appendChild(elemento2Tabela);
+        linhaTabela.appendChild(elemento3Tabela);
 
-    corpoTabela.appendChild(linhaTabela);
-    //No json vem o dado que informa o preço final das vendas, que é passado como parametro para o contarPreco
+        corpoTabela.appendChild(linhaTabela);
+        //No json vem o dado que informa o preço final das vendas, que é passado como parametro para o contarPreco
+    }
+}
+
+function salvarDados(json){
+    cont++;
+    localStorage.setItem("cont", cont);
+    localStorage.setItem("nome"+cont, json['nome']);
+    localStorage.setItem("preco"+cont, json['preco']);
+    localStorage.setItem("fornecedores"+cont, json['fornecedores']);
+    sqlTotal = sqlTotal+"/"+(json['sql']);
     const numeroTeste = json['precoFinal'];
+    var contFinal = localStorage.getItem("cont", cont)
+    criarTabela(contFinal,cont);
     contarPreco(numeroTeste);
 }
 
 //Função que recebe o preço final das vendas e insere numa div
 function contarPreco(numeroTeste){
-    document.getElementById('precoTabela').innerHTML = numeroTeste;
-    console.log(numeroTeste);
+    document.getElementById('precoTabela').innerHTML = "Preço Total: "+numeroTeste; 
 }
 
 //pega o form inteiro que sera lido pelo FormData
@@ -194,7 +227,7 @@ form.addEventListener("submit", function(event){
                 //Fecha o popup
                 const popup = document.querySelector('.popup-wrapper');
                 //Envia json como paramentro para criar tabela de vendas
-                criarTabela(json);
+                salvarDados(json);
                 popup.style.display = 'none'
                 limparFormulario();
             }
@@ -203,3 +236,25 @@ form.addEventListener("submit", function(event){
 });
 
 
+const botaoVenda = document.getElementById("venda");
+
+botaoVenda.addEventListener("click", function(event){
+    $.ajax({
+
+        url:"vendaFinal.php",
+        method:"POST",
+        data:{input:sqlTotal},
+        
+        //Se ocorrer tudo certo, será apresenta as informações do produto pesquisado
+        success:function(data){
+            alert("Vendas realizadas com sucesso");
+            tabelaPreco();
+        }
+    });    
+    
+})
+
+function tabelaPreco(){
+    localStorage.clear();
+    document.location.reload(true);
+}

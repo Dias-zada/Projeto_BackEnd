@@ -56,13 +56,13 @@
                                                     <div class="row">
                                                         <div class="col-6">
                                                             <div class="form-floating mb-3">
-                                                                <input type="date" required class="form-control rounded-4" id="txtDataVenda" name="DataVenda" placeholder="Data Venda" max="2022-12-31" min="1900-01-01">
+                                                                <input type="text" required class="form-control rounded-4" id="txtDataVenda" name="DataVenda" placeholder="Data Venda" readonly>
                                                                 <label id="labelDataVenda" for="txtDataVenda">Data Venda</label>
                                                             </div>
                                                         </div>
                                                         <div class="col-6">
                                                             <div class="form-floating mb-3">
-                                                                <input type="number" class="form-control rounded-4" minlength="8" maxlength="8" id="txtCEP" name="CEP" placeholder="CEP" onkeypress="return event.charCode >= 48 && event.charCode <= 57" required>
+                                                                <input type="number" class="form-control rounded-4" minlength="8" maxlength="8" id="txtCEP" name="CEP" placeholder="CEP"required>
                                                                 <label id="labelCEP" for="txtCEP">CEP</label>
                                                             </div>
                                                         </div>
@@ -161,8 +161,8 @@
                                 </tbody>
                             </table>
                             <!--Divs para mostra o preço final-->
-                            <div>Preço Total:</div>
-                            <div id="precoTabela">0</div>
+                            <div id="precoTabela"></div>
+                            <button id="venda" class="w-100 mb-2 btn btn-lg rounded-4 btn-dark">Confirmar Venda</button>
                         </div>
                     </div>
                 </div>

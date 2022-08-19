@@ -22,8 +22,7 @@ $precoFinal = $_SESSION['precoFinal'];
 $sql = "insert into vendas (data_Venda, estado_Venda, cidade_Venda, bairro_Venda, rua_Venda, cep_Venda, referencia_Produto) 
 values ('".$DataVenda."','".$Estado."','".$Cidade."','".$Bairro."','".$Rua."','".$cep."','".$Id."');";
 
-//Executa o comando sql e receba os dados que vem da query
-$res = mysqli_query($con->getConexao(), $sql);
+$sqlTotal = $sql;
 
 
 //Comando sql para pegar o nome dos fornecedores
@@ -61,7 +60,8 @@ $dados = array(
     "nome" => $nome,
     "preco" => $preco,
     "fornecedores" => $fornecedor,
-    "precoFinal" => $precoTabela
+    "precoFinal" => $precoTabela,
+    "sql" => $sqlTotal
 );
 $json = json_encode($dados);
 echo ($json);
