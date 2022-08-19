@@ -183,7 +183,6 @@ function criarTabela(contFinal,cont){
         corpoTabela.appendChild(linhaTabela);
         //No json vem o dado que informa o preço final das vendas, que é passado como parametro para o contarPreco
     }
-    console.log(localStorage.getItem("sql"));
 }
 
 if(localStorage.cont){
